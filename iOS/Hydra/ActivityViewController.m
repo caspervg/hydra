@@ -39,6 +39,8 @@
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         [center addObserver:self selector:@selector(activitiesUpdated:)
                        name:AssociationStoreDidUpdateActivitiesNotification object:nil];
+        [center addObserver:self selector:@selector(applicationDidBecomeActive:)
+                       name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     return self;
 }
@@ -94,6 +96,15 @@
 {
     [super viewWillDisappear:animated];
     [SVProgressHUD dismiss];
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification
+{
+    NSDate *firstDay = self.days[0];
+    if (!firstDay || [firstDay isEarlierThanDate:[[NSDate date] dateAtStartOfDay]]) {
+        [[AssociationStore sharedStore] reloadActivities];
+        [self loadActivities];
+    }
 }
 
 - (void)didPullRefreshControl:(id)sender

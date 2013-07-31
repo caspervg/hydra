@@ -31,6 +31,8 @@
         [center addObserver:self selector:@selector(articlesUpdated:)
                        name:SchamperStoreDidUpdateArticlesNotification
                      object:nil];
+        [center addObserver:self selector:@selector(applicationDidBecomeActive:)
+                       name:UIApplicationDidBecomeActiveNotification object:nil];
         [[SchamperStore sharedStore] updateArticles];
     }
     return self;
@@ -86,6 +88,11 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification
+{
+    [[SchamperStore sharedStore] reloadArticles];
 }
 
 #pragma mark - Table view data source

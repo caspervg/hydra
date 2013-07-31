@@ -32,6 +32,8 @@
         [center addObserver:self selector:@selector(newsUpdated:)
                        name:AssociationStoreDidUpdateNewsNotification
                      object:nil];
+        [center addObserver:self selector:@selector(applicationDidBecomeActive:)
+                       name:UIApplicationDidBecomeActiveNotification object:nil];
 
         [self loadNews];
     }
@@ -83,6 +85,11 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification
+{
+    [[AssociationStore sharedStore] reloadNewsItems];
 }
 
 #pragma mark - Table view data source
