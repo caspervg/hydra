@@ -22,10 +22,12 @@ import be.ugent.zeus.hydra.data.Song;
 import be.ugent.zeus.hydra.data.caches.SongCache;
 import be.ugent.zeus.hydra.data.services.HTTPIntentService;
 import be.ugent.zeus.hydra.data.services.UrgentService;
+import be.ugent.zeus.hydra.util.audiostream.ASyncGetURLTask;
 import be.ugent.zeus.hydra.util.audiostream.MusicService;
 
 public class Urgent extends AbstractSherlockActivity {
-
+    
+    final static String URL = "http://urgent.stream.flumotion.com/urgent/high.mp3.m3u";
     private static final String TAG = "Urgent";
     private static final int REFRESH_TIME = 20 * 1000;
     private final Handler handler = new Handler();
@@ -44,6 +46,8 @@ public class Urgent extends AbstractSherlockActivity {
         setTitle(R.string.title_urgent);
         setContentView(R.layout.urgent);
 
+        new ASyncGetURLTask().execute(URL);
+        
         final ImageButton btnPlay = (ImageButton) findViewById(R.id.btnPlay);
         if (MusicService.mState == MusicService.State.Playing) {
             btnPlay.setImageResource(R.drawable.button_urgent_pause);
@@ -132,6 +136,12 @@ public class Urgent extends AbstractSherlockActivity {
 
     }
 
+    public void onError() {
+        final ImageButton btnPlay = (ImageButton) findViewById(R.id.btnPlay);
+        btnPlay.setImageResource(R.drawable.button_urgent_play);
+        handler.removeCallbacks(refresh);
+    }
+    
     public void openUrl(String url) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

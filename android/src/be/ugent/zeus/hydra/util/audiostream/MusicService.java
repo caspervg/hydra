@@ -53,7 +53,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     OnErrorListener, MusicFocusable {
 
     // Stream URL
-    final static String URL = "http://195.10.10.207/urgent/high.mp3";
+    public static String mp3URL = "";
     // The tag we put on debug messages
     final static String TAG = "Urgent.fm";
     // These are the Intent actions that we are prepared to handle. Notice that the fact these
@@ -157,7 +157,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     @Override
     public void onCreate() {
         Log.i(TAG, "debug: Creating service");
-
+        
         // Create the Wifi lock (this does not acquire the lock, this just creates it)
         mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
             .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
@@ -338,7 +338,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
             mAudioFocus = AudioFocus.Focused;
         }
     }
-
+    
     /**
      * Starts playing the next song. If manualUrl is null, the next song will be randomly selected
      * from our Media Retriever (that is, it will be a random song in the user's device). If
@@ -349,12 +349,18 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
         mState = State.Stopped;
         relaxResources(false); // release everything except MediaPlayer
 
+        // MP3 isn't done loading yet.
+        if("".equals(mp3URL)) {
+            Toast.makeText(this, R.string.could_not_load_mp3, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         try {
 
             // set the source of the media player to a manual URL or path
             createMediaPlayerIfNeeded();
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mPlayer.setDataSource(URL);
+            mPlayer.setDataSource(mp3URL);
             mIsStreaming = true;
 
 

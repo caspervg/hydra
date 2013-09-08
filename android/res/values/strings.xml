@@ -123,6 +123,8 @@
     <string name="button_declined">Gaat niet</string>
     <string name="button_undecided">Onbeslist</string>
     
+    <string name="could_not_load_mp3">Stream kon niet geladen worden; probeer opnieuw.</string>
+    
     <!-- API keys -->
     <string name="applicationId">146947948791011</string>
     <string name="maps_api_key">AIzaSyBITAqykoWxmWtIhMHc-SLei2dL2Jpaq8Y</string>
