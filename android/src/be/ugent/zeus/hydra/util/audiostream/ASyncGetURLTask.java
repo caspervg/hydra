@@ -4,7 +4,12 @@
  */
 package be.ugent.zeus.hydra.util.audiostream;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ImageButton;
+import be.ugent.zeus.hydra.R;
+import be.ugent.zeus.hydra.Urgent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,6 +20,12 @@ import java.net.URL;
  * @author silox
  */
 public class ASyncGetURLTask extends AsyncTask<String, Void, String> {
+
+    Urgent parent;
+    
+    public ASyncGetURLTask(Urgent parent) {
+        this.parent = parent;
+    }
 
     protected String doInBackground(String... URL) {
 
@@ -47,5 +58,6 @@ public class ASyncGetURLTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String URL) {
         MusicService.mp3URL = URL;
+        parent.attachListener();
     }
 }

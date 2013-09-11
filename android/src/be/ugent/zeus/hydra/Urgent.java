@@ -45,10 +45,10 @@ public class Urgent extends AbstractSherlockActivity {
 
         setTitle(R.string.title_urgent);
         setContentView(R.layout.urgent);
-
-        new ASyncGetURLTask().execute(URL);
         
         final ImageButton btnPlay = (ImageButton) findViewById(R.id.btnPlay);
+        new ASyncGetURLTask(this).execute(URL);
+        
         if (MusicService.mState == MusicService.State.Playing) {
             btnPlay.setImageResource(R.drawable.button_urgent_pause);
         } else {
@@ -62,31 +62,6 @@ public class Urgent extends AbstractSherlockActivity {
 
         prevContainer = (LinearLayout) findViewById(R.id.urgent_vorige_container);
         currentContainer = (LinearLayout) findViewById(R.id.urgent_huidige_container);
-
-        btnPlay.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (MusicService.mState != MusicService.State.Playing) {
-                    btnPlay.setImageResource(R.drawable.button_urgent_pause);
-
-                    handler.post(refresh);
-
-                } else {
-                    btnPlay.setImageResource(R.drawable.button_urgent_play);
-
-                    handler.removeCallbacks(refresh);
-                }
-                startService(new Intent(MusicService.ACTION_TOGGLE_PLAYBACK));
-            }
-        });
-
-        refresh = new Runnable() {
-            public void run() {
-                Log.d(TAG, "refreshing time!");
-                refresh();
-                handler.postDelayed(refresh, REFRESH_TIME);
-            }
-        };
 
         cache = SongCache.getInstance(Urgent.this);
 
@@ -136,6 +111,28 @@ public class Urgent extends AbstractSherlockActivity {
 
     }
 
+    public void attachListener() {        
+        
+        final ImageButton btnPlay = (ImageButton) findViewById(R.id.btnPlay);
+
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                if (MusicService.mState != MusicService.State.Playing) {
+                    btnPlay.setImageResource(R.drawable.button_urgent_pause);
+
+                    handler.post(refresh);
+
+                } else {
+                    btnPlay.setImageResource(R.drawable.button_urgent_play);
+
+                    handler.removeCallbacks(refresh);
+                }
+                startService(new Intent(MusicService.ACTION_TOGGLE_PLAYBACK));
+            }
+        });
+    }
+    
     public void onError() {
         final ImageButton btnPlay = (ImageButton) findViewById(R.id.btnPlay);
         btnPlay.setImageResource(R.drawable.button_urgent_play);
